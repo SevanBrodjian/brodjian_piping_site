@@ -741,7 +741,7 @@ a:hover { color: var(--ink); }
 
 .profile .wrap {
   display: grid;
-  grid-template-columns: 360px 1fr;
+  grid-template-columns: minmax(320px, 460px) 1fr;
   gap: clamp(36px, 5vw, 64px);
   align-items: start;
 }
@@ -769,9 +769,10 @@ a:hover { color: var(--ink); }
 }
 .frame img {
   width: 100%;
-  aspect-ratio: 4 / 5;
+  height: auto; /* the height attribute otherwise pins 1000px and defeats aspect-ratio */
+  aspect-ratio: 1 / 1;
   object-fit: cover;
-  object-position: 50% 22%; /* keep the face in frame on portrait shots */
+  object-position: 50% 25%; /* keep the face in frame on portrait shots */
   border: 1px solid var(--line-strong);
   filter: saturate(0.92) contrast(1.04);
 }
@@ -817,7 +818,7 @@ a:hover { color: var(--ink); }
 
 @media (max-width: 860px) {
   .profile .wrap { grid-template-columns: 1fr; }
-  .frame { max-width: 420px; }
+  .frame { max-width: 460px; }
 }
 
 /* experience timeline */
@@ -1326,11 +1327,23 @@ dialog[open] { animation: dlg-in 0.26s var(--ease-sharp); }
 }
 
 /* ---------- reveal system ----------
-   Deliberately minimal: body copy and cards render immediately (no scroll
-   fades). Only the big steel headings get a sharp machined wipe. */
+   Restrained: big steel headings get a sharp machined wipe; whole section
+   blocks (not individual items) get one quick, subtle rise. */
 
+html.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+}
 html.js [data-reveal="wipe"] {
+  opacity: 1;
+  transform: none;
   clip-path: inset(0 100% 0 0);
+}
+html.js .is-on[data-reveal] {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.4s ease, transform 0.45s var(--ease-sharp);
+  transition-delay: calc(var(--i, 0) * 90ms);
 }
 html.js .is-on[data-reveal="wipe"] {
   clip-path: inset(0 -2% 0 0);
@@ -1339,7 +1352,10 @@ html.js .is-on[data-reveal="wipe"] {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html.js [data-reveal],
   html.js [data-reveal="wipe"] {
+    opacity: 1 !important;
+    transform: none !important;
     clip-path: none !important;
     transition: none !important;
   }

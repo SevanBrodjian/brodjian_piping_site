@@ -23,19 +23,41 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Every image dropped into photos/ shows up in the gallery automatically,
-      # in alphabetical filename order. No manual manifest editing needed.
-      - name: Build photo manifest
+      # Any image dropped into photos/ (straight off a phone is fine) is
+      # optimized for the web and added to the gallery automatically, in
+      # alphabetical filename order. Nothing to edit by hand.
+      - name: Optimize photos and build manifest
         run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq imagemagick libheif-examples > /dev/null
+          shopt -s nullglob nocaseglob
+          cd photos
+
+          # iPhone HEIC -> JPG
+          for f in *.heic *.heif; do
+            heif-convert "$f" "${f%.*}.jpg" && rm -f "$f"
+          done
+
+          # big PNG screenshots -> flattened JPG
+          for f in *.png; do
+            convert "$f" -auto-orient -background '#0b0d12' -flatten \
+              -resize '1600x1600>' -quality 84 "${f%.*}.jpg" && rm -f "$f"
+          done
+
+          # cap size / bake orientation on everything else
+          for f in *.jpg *.jpeg *.webp; do
+            mogrify -auto-orient -resize '1600x1600>' -quality 84 "$f"
+          done
+
           {
             echo "/* Generated at deploy time from the contents of photos/. */"
             echo "window.GALLERY_PHOTOS = ["
-            find photos -maxdepth 1 -type f \
+            find . -maxdepth 1 -type f \
               \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' -o -iname '*.gif' -o -iname '*.avif' \) \
-              | sort | sed 's/.*/  "&",/'
+              | sed 's|^\./||' | sort | sed 's/.*/  "photos\/&",/'
             echo "];"
-          } > photos/photos.js
-          echo "Manifest:" && cat photos/photos.js
+          } > photos.js
+          echo "Manifest:" && cat photos.js
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

@@ -49,8 +49,8 @@
     mq.addEventListener("change", (e) => { if (e.matches) setOpen(false); });
   }
 
-  /* scroll reveals (wipe headings only; everything else renders immediately) */
-  const revealEls = $$('[data-reveal="wipe"]');
+  /* scroll reveals: heading wipes + one subtle rise per section block */
+  const revealEls = $$("[data-reveal]");
   if (prefersReduce || !("IntersectionObserver" in window)) {
     revealEls.forEach((el) => el.classList.add("is-on"));
   } else {

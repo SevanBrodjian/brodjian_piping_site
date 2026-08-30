@@ -26,7 +26,8 @@ hosted on GitHub Pages.
    (The included workflow `.github/workflows/deploy.yml` builds the photo manifest and
    deploys on every push to `main`.)
 3. **Custom domain** — in the same Pages settings, enter `brodjianpiping.com` in
-   *Custom domain* (the `CNAME` file in this repo keeps it set across deploys).
+   *Custom domain* (with GitHub Actions deployment the setting persists on its own;
+   no CNAME file needed).
 4. **DNS** (at the registrar where brodjianpiping.com is registered):
    - Four `A` records for the apex `@`:
      `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
@@ -50,10 +51,13 @@ and email links next to it always work.
 
 ## Adding gallery photos
 
-Drop images into `photos/`, commit, push. That's it — the deploy workflow scans the
-folder and rebuilds the gallery manifest automatically. Photos appear in alphabetical
-filename order, so name them `01-...jpg`, `02-...jpg` to control ordering. Keep files
-under ~500 KB each for fast loads (export at ~1600px on the long edge).
+Drop images into `photos/`, commit, push. That's it — the deploy workflow converts
+(HEIC/PNG to JPG), resizes to 1600px, and rebuilds the gallery manifest automatically.
+Full-size photos straight off a phone are fine. Photos appear in alphabetical filename
+order, so name them `01-...jpg`, `02-...jpg` to control ordering.
+
+Uploads also work directly on github.com (open the `photos/` folder, *Add file →
+Upload files*, drag in, Commit) — no git required, so Ara can do it himself.
 
 (For local previews only, you can hand-list files in `photos/photos.js` — the live
 site overwrites that file at deploy time.)
