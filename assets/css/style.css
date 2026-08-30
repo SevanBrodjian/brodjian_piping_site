@@ -377,8 +377,11 @@ a:hover { color: var(--ink); }
   width: 100%;
   max-width: 1280px; /* wider than the standard .wrap: the hero fills the screen */
   align-content: center;
-  grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
-  column-gap: clamp(24px, 3.6vw, 56px);
+  /* content-sized tracks centered as a pair, so leftover space falls to the
+     outer edges instead of opening a gap down the middle */
+  justify-content: center;
+  grid-template-columns: minmax(0, auto) minmax(0, auto);
+  column-gap: clamp(28px, 4.5vw, 80px);
   grid-template-areas:
     "eyebrow scene"
     "title   scene"
@@ -406,8 +409,8 @@ a:hover { color: var(--ink); }
 
 .weld-scene {
   position: relative;
-  width: min(100%, 50vh);
-  max-width: 470px;
+  /* a definite width (no %) so the auto grid track can size to it */
+  width: min(50vh, 470px);
   aspect-ratio: 1105 / 1076;
   margin-inline: auto;
 }
