@@ -1,12 +1,12 @@
-/* Local photo gallery (optional).
-   Drop image files into this photos/ folder, then list them here in the order
-   they should appear. The gallery page shows them in a grid with a lightbox.
-   Leave the list empty to show only the Instagram panel.
+/* Gallery photo manifest.
+   On the live site this file is REGENERATED automatically at deploy time
+   (.github/workflows/deploy.yml) from every image in the photos/ folder,
+   listed in alphabetical filename order. Just drop images in photos/ and
+   push; nothing to edit here.
+   Tip: name files 01-xxx.jpg, 02-xxx.jpg, ... to control the order.
 
-   Example:
-   window.GALLERY_PHOTOS = [
-     "photos/sanitary-weld-01.jpg",
-     "photos/skid-install-02.jpg",
-   ];
+   This local copy only matters for local previews; you can list files here
+   by hand while testing, e.g.:
+   window.GALLERY_PHOTOS = ["photos/sanitary-weld-01.jpg"];
 */
 window.GALLERY_PHOTOS = [];

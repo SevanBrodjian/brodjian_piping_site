@@ -27,6 +27,10 @@
   ];
   const LOOP = PHASES.reduce((s, p) => s + p[1], 0);
 
+  /* canvas bleed (logo units): sparks fly past the scene box, so the fx
+     canvas extends beyond it or streaks would clip at an invisible edge */
+  const BLEED = { l: 340, t: 160, r: 140, b: 160 };
+
   let welder = null, lensGlow = null;
   let W = 0, H = 0, scale = 1;
   let clock = 0, lastT = 0, rafId = 0;
@@ -37,15 +41,21 @@
   function size() {
     const rect = canvas.parentElement.getBoundingClientRect();
     const dpr = Math.min(devicePixelRatio || 1, 2);
-    W = Math.max(160, rect.width);
-    H = rect.height || (W * VB.h / VB.w);
+    const sceneW = Math.max(160, rect.width);
+    const sceneH = rect.height || (sceneW * VB.h / VB.w);
+    scale = sceneW / VB.w;
+    W = sceneW + (BLEED.l + BLEED.r) * scale;
+    H = sceneH + (BLEED.t + BLEED.b) * scale;
+    canvas.style.left = (-BLEED.l * scale) + "px";
+    canvas.style.top = (-BLEED.t * scale) + "px";
+    canvas.style.width = W + "px";
+    canvas.style.height = H + "px";
     canvas.width = Math.round(W * dpr);
     canvas.height = Math.round(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    scale = W / VB.w;
   }
-  const sx = (x) => (x - VB.x) * scale;
-  const sy = (y) => (y - VB.y) * scale;
+  const sx = (x) => (x - VB.x + BLEED.l) * scale;
+  const sy = (y) => (y - VB.y + BLEED.t) * scale;
 
   function phaseAt(t) {
     let m = t % LOOP;
@@ -208,8 +218,14 @@
     lensGlow.setAttribute("ry", 72);
     lensGlow.setAttribute("fill", "url(#lens-grad)");
     lensGlow.setAttribute("fill-opacity", "0");
-    welder.appendChild(lensGlow);
-    welder.appendChild(document.importNode(figure, true));
+    /* layer order inside the rotating group: opaque blocker silhouette,
+       then the lens glow, then the linework, so the glow shines through
+       the lens cutout but never through the blocker */
+    const fig = document.importNode(figure, true);
+    const lines = fig.querySelector("#lines");
+    if (lines) fig.insertBefore(lensGlow, lines);
+    else fig.appendChild(lensGlow);
+    welder.appendChild(fig);
     svg.appendChild(welder);
 
     size();

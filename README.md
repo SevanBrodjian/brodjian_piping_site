@@ -22,8 +22,9 @@ hosted on GitHub Pages.
    git commit -m "Launch site"
    git push -u origin main
    ```
-2. **Enable Pages** — on GitHub: repo → *Settings → Pages* → Source: *Deploy from a
-   branch* → Branch: `main`, folder `/ (root)` → Save.
+2. **Enable Pages** — on GitHub: repo → *Settings → Pages* → Source: **GitHub Actions**.
+   (The included workflow `.github/workflows/deploy.yml` builds the photo manifest and
+   deploys on every push to `main`.)
 3. **Custom domain** — in the same Pages settings, enter `brodjianpiping.com` in
    *Custom domain* (the `CNAME` file in this repo keeps it set across deploys).
 4. **DNS** (at the registrar where brodjianpiping.com is registered):
@@ -49,17 +50,13 @@ and email links next to it always work.
 
 ## Adding gallery photos
 
-Drop images into `photos/` and list them in `photos/photos.js`:
+Drop images into `photos/`, commit, push. That's it — the deploy workflow scans the
+folder and rebuilds the gallery manifest automatically. Photos appear in alphabetical
+filename order, so name them `01-...jpg`, `02-...jpg` to control ordering. Keep files
+under ~500 KB each for fast loads (export at ~1600px on the long edge).
 
-```js
-window.GALLERY_PHOTOS = [
-  "photos/sanitary-weld-01.jpg",
-  "photos/skid-install-02.jpg",
-];
-```
-
-Order in the list = order on the page. Keep files under ~500 KB each for fast
-loads (export at ~1600px on the long edge).
+(For local previews only, you can hand-list files in `photos/photos.js` — the live
+site overwrites that file at deploy time.)
 
 ## Swapping the headshot
 
