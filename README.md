@@ -59,8 +59,15 @@ order, so name them `01-...jpg`, `02-...jpg` to control ordering.
 Uploads also work directly on github.com (open the `photos/` folder, *Add file →
 Upload files*, drag in, Commit) — no git required, so Ara can do it himself.
 
-(For local previews only, you can hand-list files in `photos/photos.js` — the live
-site overwrites that file at deploy time.)
+## Previewing locally
+
+```bash
+python3 tools/serve.py
+```
+
+Serves the site at http://localhost:8735 and rebuilds the gallery list from the
+`photos/` folder on every reload, the same way the deploy workflow does, so what
+you see locally matches the live site.
 
 ## Swapping the headshot
 

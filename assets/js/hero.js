@@ -10,20 +10,21 @@
   const ctx = canvas.getContext("2d");
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* scene constants (logo coordinate space; viewBox is "290 20 1080 1000") */
-  const VB = { x: 290, y: 20, w: 1080, h: 1000 };
+  /* scene constants (logo coordinate space; must match the svg viewBox) */
+  const VB = { x: 299, y: -51, w: 1105, h: 1076 };
   const PIVOT = { x: 1140, y: 900 };  // lower right of the figure
   const WP = { x: 352, y: 800 };      // torch tip / arc point
   const LENS = { x: 530, y: 452 };    // hood lens, glows through the cutout
   const BACK_ANGLE = 7;               // degrees, leaned away from the work
 
+  /* deliberately unhurried: a welder settles in, runs a bead, backs off */
   const PHASES = [
-    ["rest", 0.9],
-    ["lean-in", 0.9],
-    ["strike", 0.16],
-    ["weld", 2.7],
-    ["stop", 0.25],
-    ["lean-back", 0.95]
+    ["rest", 1.8],
+    ["lean-in", 1.8],
+    ["strike", 0.18],
+    ["weld", 5.4],
+    ["stop", 0.5],
+    ["lean-back", 1.9]
   ];
   const LOOP = PHASES.reduce((s, p) => s + p[1], 0);
 
@@ -72,7 +73,7 @@
       case "rest": return BACK_ANGLE;
       case "lean-in": return BACK_ANGLE * (1 - easeInOut(p));
       case "strike": return 0;
-      case "weld": return 0.35 * Math.sin(t * 9) * Math.sin(t * 4.3); // steady hand
+      case "weld": return 0.35 * Math.sin(t * 4.5) * Math.sin(t * 2.1); // steady hand
       case "stop": return 0;
       case "lean-back": return BACK_ANGLE * easeInOut(p);
     }

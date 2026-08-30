@@ -54,18 +54,46 @@
   if (prefersReduce || !("IntersectionObserver" in window)) {
     revealEls.forEach((el) => el.classList.add("is-on"));
   } else {
+    let pending = revealEls.slice();
+    const show = (el) => {
+      el.classList.add("is-on");
+      io.unobserve(el);
+    };
     /* threshold must be 0: wipe reveals are fully clipped, so their
        intersection ratio stays 0 until revealed (clip-path shrinks the
        intersection rect); any ratio threshold would never fire for them */
     const io = new IntersectionObserver((entries) => {
-      for (const en of entries) {
-        if (en.isIntersecting) {
-          en.target.classList.add("is-on");
-          io.unobserve(en.target);
-        }
-      }
+      for (const en of entries) if (en.isIntersecting) show(en.target);
     }, { threshold: 0, rootMargin: "0px 0px -48px 0px" });
     revealEls.forEach((el) => io.observe(el));
+
+    /* Fail-safe sweep. Content must never stay invisible because an observer
+       update was missed -- which happens on anchor jumps (/about.html#experience),
+       browser-restored scroll positions, and background/throttled tabs. */
+    let lastSweep = 0;
+    const sweep = () => {
+      lastSweep = Date.now();
+      const limit = innerHeight - 48;
+      pending = pending.filter((el) => {
+        if (el.classList.contains("is-on")) return false;
+        const r = el.getBoundingClientRect();
+        if (r.top < limit && r.bottom > 0) { show(el); return false; }
+        return true;
+      });
+      if (!pending.length) {
+        removeEventListener("scroll", onScrollSweep);
+        removeEventListener("resize", onScrollSweep);
+      }
+    };
+    /* runs synchronously (not via rAF) so it still fires in throttled or
+       non-painting contexts, which is exactly when the observer misses */
+    const onScrollSweep = () => {
+      if (Date.now() - lastSweep > 80) sweep();
+    };
+    addEventListener("scroll", onScrollSweep, { passive: true });
+    addEventListener("resize", onScrollSweep);
+    addEventListener("load", sweep);
+    sweep();
   }
 
   /* stat counters */
