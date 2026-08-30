@@ -40,7 +40,7 @@ jobs:
 
           # big PNG screenshots -> flattened JPG
           for f in *.png; do
-            convert "$f" -auto-orient -background '#0b0d12' -flatten \
+            convert "$f" -auto-orient -background '#0b0f1f' -flatten \
               -resize '1600x1600>' -quality 84 "${f%.*}.jpg" && rm -f "$f"
           done
 

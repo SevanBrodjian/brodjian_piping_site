@@ -4,9 +4,9 @@
    ============================================================ */
 
 :root {
-  --bg: #05070f;
-  --bg-2: #090c16;
-  --panel: #0b101d;
+  --bg: #070a18;
+  --bg-2: #0b0f1f;
+  --panel: #0d1226;
   --line: rgba(151, 168, 205, 0.14);
   --line-strong: rgba(151, 168, 205, 0.28);
   --ink: #e8ecf5;
@@ -178,7 +178,7 @@ a:hover { color: var(--ink); }
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: rgba(5, 7, 15, 0.86);
+  background: rgba(7, 10, 24, 0.86);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   opacity: 0;
@@ -311,7 +311,7 @@ a:hover { color: var(--ink); }
     flex-direction: column;
     justify-content: center;
     gap: 8px;
-    background: rgba(5, 7, 15, 0.97);
+    background: rgba(7, 10, 24, 0.97);
     -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
     transform: translateX(100%);
@@ -988,7 +988,7 @@ dialog[open] { animation: dlg-in 0.26s var(--ease-sharp); }
   align-items: center;
   gap: 14px;
   padding: 16px 22px;
-  background: rgba(9, 12, 22, 0.97);
+  background: rgba(11, 15, 31, 0.97);
   border-bottom: 1px solid var(--line);
 }
 .dlg-bar strong {
