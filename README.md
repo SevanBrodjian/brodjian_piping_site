@@ -25,15 +25,19 @@ hosted on GitHub Pages.
 2. **Enable Pages** — on GitHub: repo → *Settings → Pages* → Source: **GitHub Actions**.
    (The included workflow `.github/workflows/deploy.yml` builds the photo manifest and
    deploys on every push to `main`.)
-3. **Custom domain** — in the same Pages settings, enter `brodjianpiping.com` in
-   *Custom domain* (with GitHub Actions deployment the setting persists on its own;
-   no CNAME file needed).
-4. **DNS** (at the registrar where brodjianpiping.com is registered):
-   - Four `A` records for the apex `@`:
+3. **DNS** — the domain is registered at **GoDaddy** (nameservers `*.domaincontrol.com`).
+   In GoDaddy: *My Products → brodjianpiping.com → DNS → Manage Zones*.
+   - If **Domain Forwarding / parking** is on, turn it off first, or GoDaddy keeps
+     re-adding its own `A` records and overwriting these.
+   - Delete the existing `A` records on `@` (the parking addresses), then add four:
      `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
-   - One `CNAME` record: `www` → `<github-username>.github.io`
-5. Back in Pages settings, once the DNS check passes, tick **Enforce HTTPS**
-   (may take up to an hour to become available while the certificate is issued).
+   - Point `www` at GitHub: type `CNAME`, name `www`, value `sevanbrodjian.github.io`
+4. **Custom domain** — once `dig +short brodjianpiping.com` returns the four `185.199.*`
+   addresses, go to *Settings → Pages → Custom domain*, enter `brodjianpiping.com`, Save.
+   Keep the `CNAME` file in this repo: with GitHub Actions deploys it is what carries the
+   domain into each deployment.
+5. Once the DNS check passes, tick **Enforce HTTPS** (the certificate can take up to an
+   hour to be issued).
 
 Every later `git push` to `main` redeploys the site automatically in ~1 minute.
 
